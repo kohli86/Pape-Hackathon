@@ -81,4 +81,9 @@ The player starts a run with three lives. Rotating pipes and watching the live n
 
 The level countdown is a separate hard deadline. If it reaches zero, the run ends immediately; a life is not deducted as an intermediate step. Completing a level awards points based on the remaining time, pipe-turn efficiency, and hint usage.
 
-The illustrated community school is a visual SDG 6 feedback element. As time falls below half, below one quarter, and finally reaches zero, the tank reserve drains and the school scene changes from stable to strained, critical, and without supply. This links the timer to the real-world consequence represented by the game: interrupted access to clean water at a school.
+The illustrated community school is a visual SDG 6 feedback element. Three separate school illustrations are used: stable supply, strained supply, and critical shortage. As time falls below half and then below one quarter, the game switches to the next image and updates the reserve meter and status. At zero, the game-over state appears immediately. This links the timer to the real-world consequence represented by the game: interrupted access to clean water at a school.
+
+
+## Hint limit and school illustration
+
+Each level grants up to three hints. Every hint deducts 20 points from that level's score; the hint button is disabled after the third use. Hints reset when a new level begins. The community-school panel uses three separate original generated illustrations in a warm, rounded cartoon/vector-inspired style. They show stable, strained, and critical water-supply conditions. The timer switches between these images; the reserve meter and status copy update alongside them. The supplied reference artwork was used only for broad stylistic direction; its people, pose, and composition were not copied.

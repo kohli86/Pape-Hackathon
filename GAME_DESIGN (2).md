@@ -69,7 +69,21 @@ Players experience how the layout and condition of infrastructure affect whether
 
 - The player begins a run with three shared lives.
 - Each level gets a countdown based on its board size and level index (minimum 50 seconds at Level 1; capped at 110 seconds).
-- Running out of time consumes one life and regenerates the current level with a fresh puzzle. Completed-level points are retained.
+- A failed TEST WATER FLOW action consumes one life and leaves the current puzzle and countdown unchanged. If the countdown reaches zero, the run ends immediately without first consuming a life.
 - When all three lives are lost, the run ends. Restarting begins again at Level 1 with three lives and zero score.
 - Successful completion awards 100 base points, 5 points per second remaining, up to 100 move-efficiency points, and a 20-point penalty for each hint used. The minimum level score is 25.
 - Resetting pipe orientations does not reset the countdown, move count, or hint count.
+
+
+## Run rules: lives, test attempts, and countdown
+
+The player starts a run with three lives. Rotating pipes and watching the live network preview are safe actions. A life is deducted only when the player presses **TEST WATER FLOW** and the route has not reached the school. The player remains on the same board after a failed test, with the current timer and pipe arrangement preserved. Three failed tests end the run and restart is available from Level 1.
+
+The level countdown is a separate hard deadline. If it reaches zero, the run ends immediately; a life is not deducted as an intermediate step. Completing a level awards points based on the remaining time, pipe-turn efficiency, and hint usage.
+
+The illustrated community school is a visual SDG 6 feedback element. Three separate school illustrations are used: stable supply, strained supply, and critical shortage. As time falls below half and then below one quarter, the game switches to the next image and updates the reserve meter and status. At zero, the game-over state appears immediately. This links the timer to the real-world consequence represented by the game: interrupted access to clean water at a school.
+
+
+## Hint limit and school illustration
+
+Each level grants up to three hints. Every hint deducts 20 points from that level's score; the hint button is disabled after the third use. Hints reset when a new level begins. The community-school panel uses three separate original generated illustrations in a warm, rounded cartoon/vector-inspired style. They show stable, strained, and critical water-supply conditions. The timer switches between these images; the reserve meter and status copy update alongside them. The supplied reference artwork was used only for broad stylistic direction; its people, pose, and composition were not copied.

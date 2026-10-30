@@ -98,48 +98,18 @@
               <span class="scene-tag">COMMUNITY SCHOOL · NORTHSIDE</span>
               <span class="scene-status" id="school-status">SUPPLY STABLE</span>
             </div>
-            <svg class="school-illustration" viewBox="0 0 520 205" role="img" aria-labelledby="school-art-title school-art-desc">
-              <title id="school-art-title">A school and its clean-water supply</title>
-              <desc id="school-art-desc">An illustrated community school connected to an elevated water tank. The tank level and surroundings change as the countdown runs low.</desc>
-              <defs>
-                <linearGradient id="school-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dff7ff"/><stop offset="1" stop-color="#b9e9f7"/></linearGradient>
-                <linearGradient id="school-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf2"/><stop offset="1" stop-color="#dceef0"/></linearGradient>
-                <clipPath id="tank-clip"><rect x="38" y="61" width="82" height="56" rx="10"/></clipPath>
-              </defs>
-              <rect class="scene-sky" width="520" height="205" rx="12"/>
-              <circle class="scene-sun" cx="461" cy="35" r="18"/>
-              <g class="scene-cloud" fill="#f6fdff"><path d="M143 43c2-9 16-12 22-4 6-15 28-12 30 4 13 0 17 18 2 19h-48c-14-1-16-16-6-19Z"/><path d="M335 28c3-8 14-10 19-3 5-11 22-9 24 4 12 0 14 14 1 15h-38c-12-1-15-12-6-16Z"/></g>
-              <path class="scene-hill" d="M0 148Q75 113 142 148T285 143t125 2 110-2v57H0Z"/>
-              <rect class="scene-ground" x="0" y="163" width="520" height="42"/>
-              <path class="scene-path" d="M214 163h95l25 42h-145Z"/>
-              <g class="scene-tree" transform="translate(145 112)"><rect x="-4" y="24" width="8" height="31" rx="3"/><circle cx="0" cy="13" r="20"/><circle cx="-12" cy="22" r="12"/><circle cx="12" cy="22" r="12"/></g>
-              <g class="scene-tree tree-right" transform="translate(430 113)"><rect x="-4" y="24" width="8" height="31" rx="3"/><circle cx="0" cy="13" r="20"/><circle cx="-12" cy="22" r="12"/><circle cx="12" cy="22" r="12"/></g>
-              <g class="water-tower">
-                <path class="tank-support" d="M50 117v36m58-36v36M52 153h54"/>
-                <rect class="tank-shell" x="38" y="61" width="82" height="56" rx="10"/>
-                <g clip-path="url(#tank-clip)"><rect id="school-water-fill" class="tank-water" x="38" y="70" width="82" height="47"/></g>
-                <path class="tank-top" d="M48 61v-7h62v7M79 54V45"/>
-                <path class="tank-mark" d="M72 82c-5 7-9 11-9 16a16 16 0 0 0 32 0c0-5-4-10-9-16-3-4-5-7-7-10-2 3-4 6-7 10Z"/>
-                <text class="tank-label" x="79" y="108" text-anchor="middle">WATER</text>
-              </g>
-              <path class="school-feed-pipe" d="M120 105h43v39h29"/>
-              <path class="school-water-flow" d="M120 105h43v39h29"/>
-              <g class="school-building">
-                <path class="school-roof" d="m184 83 108-58 108 58Z"/>
-                <rect class="school-wall" x="197" y="81" width="190" height="82" rx="3"/>
-                <rect class="school-fascia" x="187" y="77" width="210" height="10" rx="2"/>
-                <rect class="school-sign" x="244" y="93" width="96" height="22" rx="4"/>
-                <text class="school-sign-text" x="292" y="108" text-anchor="middle">SCHOOL</text>
-                <g class="school-window"><rect x="211" y="124" width="30" height="24" rx="3"/><path d="M226 124v24m-15-12h30"/></g>
-                <g class="school-window"><rect x="343" y="124" width="30" height="24" rx="3"/><path d="M358 124v24m-15-12h30"/></g>
-                <rect class="school-door" x="270" y="124" width="44" height="39" rx="3"/>
-                <circle class="school-door-knob" cx="306" cy="145" r="2"/>
-                <path class="school-steps" d="M262 163h60m-52 5h44"/>
-                <path class="school-flagpole" d="M292 25V8"/><path class="school-flag" d="M292 9h24l-7 6 7 6h-24Z"/>
-              </g>
-              <g class="scene-people"><circle cx="235" cy="178" r="4"/><path d="M235 182v10m-5-5h10"/><circle cx="357" cy="180" r="4"/><path d="M357 184v9m-5-4h10"/></g>
-            </svg>
-            <div class="school-scene-caption"><strong id="school-status-caption">The school has a steady supply of clean water.</strong><span id="school-status-detail">RESERVE LEVEL: 100%</span></div>
+            <div class="school-art-frame" id="school-art-frame" role="img" aria-label="Community school with students using a clean-water station; the scene changes as the countdown falls.">
+              <img class="school-illustration" id="school-illustration" data-scene="healthy" src="school-stable.webp" alt="A sunny illustrated community school with a full water tank and students using clean water" width="676" height="574">
+              <div class="school-art-wash" aria-hidden="true"></div>
+              <div class="school-art-dust" aria-hidden="true"></div>
+              <div class="school-art-meter" aria-hidden="true">
+                <span class="art-meter-label">SCHOOL WATER</span>
+                <strong id="school-art-reserve">100%</strong>
+                <span class="art-meter-track"><i id="school-art-reserve-fill"></i></span>
+              </div>
+              <div class="school-art-state" id="school-art-state">WATER SECURE</div>
+            </div>
+            <div class="school-scene-caption"><strong id="school-status-caption">Students have reliable access to clean water.</strong><span id="school-status-detail">RESERVE LEVEL: 100%</span></div>
             <div class="school-reserve-track"><div id="school-reserve-fill" class="school-reserve-fill"></div></div>
           </div>
           <div class="mission-route-labels"><span>WATER RESERVOIR</span><span id="goal-name">NORTHSIDE SCHOOL</span></div>
@@ -161,6 +131,7 @@
               <button id="hint-button" class="button button-secondary" type="button"><span class="button-symbol">✦</span> HINT</button>
               <button id="reset-button" class="button button-quiet" type="button"><span class="button-symbol">↺</span> RESET</button>
             </div>
+            <div class="hint-usage" id="hint-usage" aria-live="polite">HINTS USED: <strong id="hint-count">0 / 3</strong> <span>· −20 POINTS EACH</span></div>
           </div>
           <div id="feedback" class="feedback" role="status" aria-live="polite">
             <span class="feedback-icon">i</span>

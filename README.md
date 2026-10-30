@@ -31,7 +31,7 @@ The level counter has no three-level cap. Grid size increases from 6 × 6 to 10 
 
 - **Click a pipe:** rotate it 90° clockwise.
 - **Test Water Flow:** check whether water can travel from the reservoir to the school.
-- **Hint:** highlight the next solution pipe that is not correctly aligned.
+- **Hint:** highlight the next solution pipe that is not correctly aligned. A maximum of **3 hints per level** are available; each deducts **20 points** from that level score. The counter appears below the Hint button.
 - **Reset:** restore the current level's original pipe arrangement.
 - **Next Level:** generate a new randomized puzzle after completing the current level.
 
@@ -50,6 +50,9 @@ Pape-Hackathon/
 ├── index.html               # Page structure and interface
 ├── style.css                # 2D visual design and responsive layout
 ├── game.js                  # Procedural level generator and game engine
+├── school-stable.webp       # Stable water supply school scene
+├── school-strained.webp     # Lowering water supply school scene
+├── school-critical.webp     # Critical water shortage school scene
 ├── README.md                # Project overview and setup
 ├── GAME_DESIGN.md           # Game concept, mechanics and SDG connection
 ├── GENERATION_EXPLAINED.md  # Beginner-friendly technical explanation
@@ -91,7 +94,7 @@ A successful level awards:
 - **100 base points** for restoring the water supply.
 - **5 points for every second remaining** on the countdown.
 - **Up to 100 efficiency points**, reduced by 5 for each pipe turn beyond the puzzle's generated optimal rotation count.
-- **20 points deducted per hint used.**
+- **20 points deducted per hint used; a maximum of 3 hints are available per level.**
 
 The level score has a minimum of 25 points. The total score accumulates across completed levels in the current run. The countdown continues when the player resets the pipe layout, so Reset cannot be used to gain extra time.
 
@@ -104,4 +107,4 @@ The level score has a minimum of 25 points. The total score accumulates across c
 - A successful test completes the level.
 - Three failed tests end the run and offer a restart at Level 1.
 - If the countdown reaches zero, the run ends immediately. Timer expiry does not consume a life first.
-- The illustrated school, tank reserve, and status label change as the timer falls to show the community impact of unreliable water access.
+- Three separate illustrated school scenes switch as the timer falls: stable supply, strained supply, and critical shortage. The reserve gauge and status text update with the scene to show the community impact of unreliable water access.

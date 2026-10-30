@@ -36,10 +36,15 @@
   const livesCaption = document.getElementById("lives-caption");
   const totalScoreDisplay = document.getElementById("total-score");
   const schoolScene = document.getElementById("school-scene");
+  const schoolIllustration = document.getElementById("school-illustration");
   const schoolStatus = document.getElementById("school-status");
   const schoolStatusCaption = document.getElementById("school-status-caption");
   const schoolStatusDetail = document.getElementById("school-status-detail");
-  const schoolWaterFill = document.getElementById("school-water-fill");
+  const schoolArtReserve = document.getElementById("school-art-reserve");
+  const schoolArtReserveFill = document.getElementById("school-art-reserve-fill");
+  const schoolArtState = document.getElementById("school-art-state");
+  const hintCountDisplay = document.getElementById("hint-count");
+  const hintUsage = document.getElementById("hint-usage");
   const schoolReserveFill = document.getElementById("school-reserve-fill");
 
   const levelNumber = document.getElementById("level-number");
@@ -73,6 +78,8 @@
   let timerDeadline = 0;
   let timerInterval = null;
   let gameOver = false;
+  const HINT_LIMIT = 3;
+  const HINT_PENALTY = 20;
 
   const keyOf = (r, c) => `${r},${c}`;
   const getTile = (r, c) => tileMap.get(keyOf(r, c));
@@ -341,16 +348,39 @@
 
     schoolScene.classList.remove("scene-healthy", "scene-strained", "scene-critical", "scene-empty");
     schoolScene.classList.add(`scene-${state}`);
+
+    // Use three separate illustrated scenes rather than tinting one image.
+    // The timer chooses the artwork; the empty state reuses the critical scene
+    // because the run ends immediately when the countdown reaches zero.
+    const imageState = state === "empty" ? "critical" : state;
+    const sceneImages = {
+      healthy: "school-stable.webp",
+      strained: "school-strained.webp",
+      critical: "school-critical.webp"
+    };
+    if (schoolIllustration && schoolIllustration.getAttribute("data-scene") !== imageState) {
+      schoolIllustration.classList.add("is-switching");
+      schoolIllustration.addEventListener("load", () => {
+        schoolIllustration.classList.remove("is-switching");
+      }, { once: true });
+      schoolIllustration.setAttribute("data-scene", imageState);
+      schoolIllustration.setAttribute("src", sceneImages[imageState]);
+      schoolIllustration.setAttribute("alt", imageState === "healthy"
+        ? "Healthy community school with students, a full water tank and clean flowing water"
+        : imageState === "strained"
+          ? "Community school in warm warning light as the water tank level falls"
+          : "Community school during a water shortage with a nearly empty tank and worried students");
+    }
     schoolStatus.textContent = label;
     schoolStatusCaption.textContent = caption;
     schoolStatusDetail.textContent = `RESERVE LEVEL: ${reserve}%`;
     schoolReserveFill.style.width = `${reserve}%`;
-    // Move the visible waterline inside the illustrated storage tank.
-    const tankHeight = 47;
-    const fillHeight = tankHeight * reserve / 100;
-    schoolWaterFill.setAttribute("y", String(117 - fillHeight));
-    schoolWaterFill.setAttribute("height", String(fillHeight));
-    schoolScene.setAttribute("aria-label", `Community school water condition: ${label.toLowerCase()}`);
+    // Update the overlaid reserve gauge and the CSS scene state. The illustration
+    // itself transitions from vibrant to sun-faded as the school runs low on water.
+    schoolArtReserve.textContent = `${reserve}%`;
+    schoolArtReserveFill.style.width = `${reserve}%`;
+    schoolArtState.textContent = state === "healthy" ? "WATER SECURE" : state === "strained" ? "CONSERVE WATER" : state === "critical" ? "EMERGENCY SUPPLY" : "SUPPLY LOST";
+    schoolScene.setAttribute("aria-label", `Community school water condition: ${label.toLowerCase()}, reserve ${reserve} percent`);
   }
 
   function updateRunHud() {
@@ -390,7 +420,7 @@
     const timeBonus = timeRemaining * 5;
     const extraMoves = Math.max(0, moves - optimalMoves);
     const efficiencyBonus = Math.max(0, 100 - extraMoves * 5);
-    const hintPenalty = hintsUsed * 20;
+    const hintPenalty = hintsUsed * HINT_PENALTY;
     const points = Math.max(25, 100 + timeBonus + efficiencyBonus - hintPenalty);
     return { timeBonus, efficiencyBonus, hintPenalty, points };
   }
@@ -404,13 +434,14 @@
 
   function enableGameplay() {
     checkButton.disabled = false;
-    hintButton.disabled = false;
     resetButton.disabled = false;
+    updateHintUsage();
   }
 
   function startFreshAttempt(message) {
     moves = 0;
     hintsUsed = 0;
+    updateHintUsage();
     solved = false;
     hintedKey = null;
     flowPath = [];
@@ -599,14 +630,27 @@
     }
   }
 
+  function updateHintUsage() {
+    hintCountDisplay.textContent = `${hintsUsed} / ${HINT_LIMIT}`;
+    hintUsage.classList.toggle("hint-limit-reached", hintsUsed >= HINT_LIMIT);
+    hintButton.disabled = solved || gameOver || hintsUsed >= HINT_LIMIT;
+    hintButton.setAttribute("aria-label", `Use hint. ${HINT_LIMIT - hintsUsed} hints remaining. Each hint deducts ${HINT_PENALTY} points.`);
+  }
+
   function showHint() {
     if (solved || gameOver) return;
+    if (hintsUsed >= HINT_LIMIT) {
+      setFeedback(`You have used all ${HINT_LIMIT} hints for this level. Each hint costs ${HINT_PENALTY} points.`, "warning");
+      updateHintUsage();
+      return;
+    }
     const nextTile = solutionTiles.map(definition => getTile(definition.r, definition.c)).find(tile => !isCorrect(tile));
     if (!nextTile) {
       setFeedback("All route pipes are aligned. Press TEST WATER FLOW to complete this level.", "success");
       return;
     }
     hintsUsed += 1;
+    updateHintUsage();
     hintedKey = keyOf(nextTile.r, nextTile.c);
     renderBoard();
     const needed = describePorts(nextTile.targetPorts);
