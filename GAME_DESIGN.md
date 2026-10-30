@@ -69,7 +69,16 @@ Players experience how the layout and condition of infrastructure affect whether
 
 - The player begins a run with three shared lives.
 - Each level gets a countdown based on its board size and level index (minimum 50 seconds at Level 1; capped at 110 seconds).
-- Running out of time consumes one life and regenerates the current level with a fresh puzzle. Completed-level points are retained.
+- A failed TEST WATER FLOW action consumes one life and leaves the current puzzle and countdown unchanged. If the countdown reaches zero, the run ends immediately without first consuming a life.
 - When all three lives are lost, the run ends. Restarting begins again at Level 1 with three lives and zero score.
 - Successful completion awards 100 base points, 5 points per second remaining, up to 100 move-efficiency points, and a 20-point penalty for each hint used. The minimum level score is 25.
 - Resetting pipe orientations does not reset the countdown, move count, or hint count.
+
+
+## Run rules: lives, test attempts, and countdown
+
+The player starts a run with three lives. Rotating pipes and watching the live network preview are safe actions. A life is deducted only when the player presses **TEST WATER FLOW** and the route has not reached the school. The player remains on the same board after a failed test, with the current timer and pipe arrangement preserved. Three failed tests end the run and restart is available from Level 1.
+
+The level countdown is a separate hard deadline. If it reaches zero, the run ends immediately; a life is not deducted as an intermediate step. Completing a level awards points based on the remaining time, pipe-turn efficiency, and hint usage.
+
+The illustrated community school is a visual SDG 6 feedback element. As time falls below half, below one quarter, and finally reaches zero, the tank reserve drains and the school scene changes from stable to strained, critical, and without supply. This links the timer to the real-world consequence represented by the game: interrupted access to clean water at a school.

@@ -82,7 +82,7 @@ Each run starts with **3 lives shared across all levels**. Every level has a cou
 Time limit = min(110, 50 + (board size - 6) × 8 + min(30, level - 1)) seconds
 ```
 
-If the timer reaches zero, the player loses one life and retries the same level with a newly generated pipe layout. The score already earned is kept. When all three lives are used, the run ends. Choosing **RESTART FROM LEVEL 1** starts a new run with 3 lives and 0 points.
+A wrong **TEST WATER FLOW** check costs one life but leaves the current board and timer unchanged. If the countdown reaches zero, the run ends immediately; timer expiry does not consume a life first. Three failed flow tests also end the run. Choosing **RESTART FROM LEVEL 1** starts a new run with 3 lives and 0 points.
 
 ### Level score
 
@@ -95,3 +95,13 @@ A successful level awards:
 
 The level score has a minimum of 25 points. The total score accumulates across completed levels in the current run. The countdown continues when the player resets the pipe layout, so Reset cannot be used to gain extra time.
 
+
+
+### Life and timer rules
+
+- Rotating pipe pieces never costs a life. The live water preview is informational only.
+- Pressing **TEST WATER FLOW** when the school is not connected costs exactly one life. The player can continue editing the same board while time remains.
+- A successful test completes the level.
+- Three failed tests end the run and offer a restart at Level 1.
+- If the countdown reaches zero, the run ends immediately. Timer expiry does not consume a life first.
+- The illustrated school, tank reserve, and status label change as the timer falls to show the community impact of unreliable water access.

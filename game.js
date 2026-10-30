@@ -35,6 +35,12 @@
   const livesDisplay = document.getElementById("lives-left");
   const livesCaption = document.getElementById("lives-caption");
   const totalScoreDisplay = document.getElementById("total-score");
+  const schoolScene = document.getElementById("school-scene");
+  const schoolStatus = document.getElementById("school-status");
+  const schoolStatusCaption = document.getElementById("school-status-caption");
+  const schoolStatusDetail = document.getElementById("school-status-detail");
+  const schoolWaterFill = document.getElementById("school-water-fill");
+  const schoolReserveFill = document.getElementById("school-reserve-fill");
 
   const levelNumber = document.getElementById("level-number");
   const districtNumber = document.getElementById("district-number");
@@ -304,12 +310,56 @@
     return Math.min(110, 50 + (size - 6) * 8 + Math.min(30, level - 1));
   }
 
+  function updateSchoolCondition() {
+    const ratio = levelTimeLimit > 0 ? Math.max(0, Math.min(1, timeRemaining / levelTimeLimit)) : 1;
+    let state;
+    let label;
+    let caption;
+    let reserve;
+
+    if (ratio <= 0) {
+      state = "empty";
+      label = "SUPPLY LOST";
+      caption = "The school has run out of water. The community is at risk.";
+      reserve = 0;
+    } else if (ratio <= 0.25) {
+      state = "critical";
+      label = "SCHOOL AT RISK";
+      caption = "Emergency reserves are almost empty. Restore the flow now.";
+      reserve = 18;
+    } else if (ratio <= 0.5) {
+      state = "strained";
+      label = "SUPPLY FALLING";
+      caption = "Water pressure is dropping and the school is rationing its supply.";
+      reserve = 55;
+    } else {
+      state = "healthy";
+      label = "SUPPLY STABLE";
+      caption = "The school has a steady supply of clean water.";
+      reserve = 100;
+    }
+
+    schoolScene.classList.remove("scene-healthy", "scene-strained", "scene-critical", "scene-empty");
+    schoolScene.classList.add(`scene-${state}`);
+    schoolStatus.textContent = label;
+    schoolStatusCaption.textContent = caption;
+    schoolStatusDetail.textContent = `RESERVE LEVEL: ${reserve}%`;
+    schoolReserveFill.style.width = `${reserve}%`;
+    // Move the visible waterline inside the illustrated storage tank.
+    const tankHeight = 47;
+    const fillHeight = tankHeight * reserve / 100;
+    schoolWaterFill.setAttribute("y", String(117 - fillHeight));
+    schoolWaterFill.setAttribute("height", String(fillHeight));
+    schoolScene.setAttribute("aria-label", `Community school water condition: ${label.toLowerCase()}`);
+  }
+
   function updateRunHud() {
     timeLeftDisplay.textContent = formatTime(timeRemaining);
     timerMetric.classList.toggle("timer-warning", timeRemaining <= 10);
     livesDisplay.textContent = lives > 0 ? "♥ ".repeat(lives).trim() : "— — —";
     livesCaption.textContent = `${lives} / 3 left`;
     totalScoreDisplay.textContent = totalScore.toLocaleString();
+    updateSchoolCondition();
   }
 
   function stopTimer() {
@@ -374,25 +424,43 @@
     startTimer();
   }
 
+  function endRun(reason) {
+    if (gameOver) return;
+    stopTimer();
+    gameOver = true;
+    disableGameplay();
+    document.getElementById("game-over-level").textContent = level;
+    document.getElementById("game-over-score").textContent = totalScore.toLocaleString();
+    document.getElementById("game-over-title").textContent = reason.title;
+    document.getElementById("game-over-description").textContent = reason.description;
+    gameOverModal.hidden = false;
+    restartRunButton.focus();
+    setFeedback(reason.description, "warning");
+  }
+
   function handleTimeFailure() {
     if (solved || gameOver) return;
     stopTimer();
     timeRemaining = 0;
+    updateRunHud();
+    // Time expiry ends the run immediately; it does not consume a life first.
+    endRun({
+      title: "Time ran out!",
+      description: "The countdown reached zero and the school’s water supply was lost. This run has ended immediately. Restart at Level 1 with three fresh lives."
+    });
+  }
+
+  function handleFailedWaterTest() {
     lives = Math.max(0, lives - 1);
     updateRunHud();
-
     if (lives === 0) {
-      gameOver = true;
-      disableGameplay();
-      document.getElementById("game-over-level").textContent = level;
-      document.getElementById("game-over-score").textContent = totalScore.toLocaleString();
-      gameOverModal.hidden = false;
-      restartRunButton.focus();
-      setFeedback("All three lives have been used. Restart the run to return to Level 1.", "warning");
+      endRun({
+        title: "The network went dry.",
+        description: "Three TEST WATER FLOW attempts failed. All three lives are used. Restart at Level 1 with a fresh run."
+      });
       return;
     }
-
-    startFreshAttempt(`Time expired. One life lost — ${lives} ${lives === 1 ? "life" : "lives"} remain. Retry this district with a fresh pipe layout.`);
+    setFeedback(`Water-flow test failed. You lost 1 life. ${lives} ${lives === 1 ? "life" : "lives"} remain. Your pipes and timer are unchanged — adjust the network and try again.`, "warning");
   }
 
   function restartRun() {
@@ -403,7 +471,7 @@
     gameOver = false;
     successModal.hidden = true;
     gameOverModal.hidden = true;
-    startFreshAttempt("New run started. You have 3 lives. Connect the reservoir to the school before the timer reaches zero.");
+    startFreshAttempt("New run started. You have 3 lives. Only a failed TEST WATER FLOW costs a life; the timer reaching zero ends the run.");
     updateRunHud();
   }
 
@@ -568,12 +636,11 @@
     const result = updateDisplay();
     if (result.reachedGoal) {
       completeLevel();
-    } else {
-      const reached = Math.max(0, result.visited.size - 1);
-      setFeedback(reached === 0
-        ? "No water can leave the reservoir yet. Connect the first pipe to the east."
-        : `Water has reached ${reached} network section${reached === 1 ? "" : "s"}, but not the school. Find the next matching connection.`, "warning");
+      return;
     }
+    // Rotating pipes and seeing partial water flow are safe. Only an explicit
+    // failed TEST WATER FLOW action costs one life.
+    handleFailedWaterTest();
   }
 
   function resetLevel() {
@@ -591,7 +658,7 @@
   function startNextLevel() {
     if (gameOver) return;
     level += 1;
-    startFreshAttempt(`District ${String(level).padStart(2, "0")} is offline. Restore the water supply before the countdown reaches zero.`);
+    startFreshAttempt(`District ${String(level).padStart(2, "0")} is offline. Build the route, then test the water flow before time runs out.`);
   }
 
   board.addEventListener("click", event => {
