@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071b27">
-  <meta name="description" content="AquaGrid: Restore the Flow — a water-network puzzle game inspired by UN Sustainable Development Goal 6.">
-  <title>AquaGrid — Restore the Flow</title>
+  <meta name="description" content="AquaGrid by Vector Coders: an endless procedural water-network puzzle game inspired by UN Sustainable Development Goal 6.">
+  <title>AquaGrid by Vector Coders — Restore the Flow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,10 +22,11 @@
         <svg viewBox="0 0 40 40" role="img"><path d="M20 4C15 12 8 18 8 25a12 12 0 0 0 24 0C32 18 25 12 20 4Z"/><path d="M14 26c.7 3.3 2.7 5 6 5"/></svg>
       </span>
       <span class="brand-name">AQUA<span>GRID</span></span>
+      <span class="brand-credit">BY VECTOR CODERS</span>
     </a>
     <div class="topbar-right">
       <span class="sdg-pill"><span class="sdg-dot"></span> SDG 06 · CLEAN WATER</span>
-      <span class="level-pill">MISSION 01 <span> / 03</span></span>
+      <span class="level-pill"><span id="level-number">LEVEL 01</span> · ENDLESS</span>
     </div>
   </header>
 
@@ -48,19 +49,35 @@
       </div>
     </section>
 
+    <section class="run-bar" aria-label="Run statistics">
+      <div class="run-metric" id="timer-metric">
+        <span class="run-metric-label">TIME LEFT</span>
+        <span class="run-metric-value"><b id="time-left">00:50</b><small>countdown</small></span>
+      </div>
+      <div class="run-metric lives-metric">
+        <span class="run-metric-label">LIVES REMAINING</span>
+        <span class="run-metric-value"><b id="lives-left">♥ ♥ ♥</b><small id="lives-caption">3 / 3 left</small></span>
+      </div>
+      <div class="run-metric score-metric">
+        <span class="run-metric-label">TOTAL SCORE</span>
+        <span class="run-metric-value"><b id="total-score">0</b><small>points</small></span>
+      </div>
+    </section>
+    <p class="run-rules-note">3 lives for the whole run · Time expires = lose 1 life · Finish faster to earn more points · Lose all 3 lives to restart at Level 1</p>
+
     <section class="game-layout" aria-label="AquaGrid puzzle">
       <div class="board-panel panel">
         <div class="panel-heading">
           <div>
             <div class="section-kicker">LIVE NETWORK MAP</div>
-            <h2>District 01 <span class="muted-heading">— Northside</span></h2>
+            <h2><span id="district-number">District 01</span> <span class="muted-heading">— <span id="district-name">Northside</span></span></h2>
           </div>
-          <div class="grid-tag"><span class="grid-tag-dot"></span> 6 × 6 GRID</div>
+          <div class="grid-tag"><span class="grid-tag-dot"></span> <span id="grid-size-label">6 × 6 GRID</span></div>
         </div>
 
         <div class="board-wrap">
-          <div class="board-axis axis-top" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span></div>
-          <div class="board-side-labels" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span></div>
+          <div id="board-axis" class="board-axis axis-top" aria-hidden="true"></div>
+          <div id="board-side-labels" class="board-side-labels" aria-hidden="true"></div>
           <div id="game-board" class="game-board" role="group" aria-label="Pipe puzzle grid. Select a pipe to rotate it clockwise."></div>
         </div>
 
@@ -75,7 +92,7 @@
 
       <aside class="side-panel" aria-label="Mission controls and information">
         <section class="panel mission-card">
-          <div class="card-topline"><span class="section-kicker">PRIMARY OBJECTIVE</span><span class="priority-tag">HIGH PRIORITY</span></div>
+          <div class="card-topline"><span class="section-kicker">PRIMARY OBJECTIVE</span><span id="difficulty-tag" class="priority-tag">STARTER</span></div>
           <div class="mission-icon-row">
             <div class="mission-icon reservoir-icon" aria-hidden="true">
               <svg viewBox="0 0 48 48"><path d="M8 15h32v24H8z"/><path d="M8 21c5-3 9 3 14 0s9 3 14 0 4 0 4 0"/><path d="M16 9h16"/><path d="M19 5h10"/></svg>
@@ -85,7 +102,7 @@
               <svg viewBox="0 0 48 48"><path d="m5 20 19-12 19 12v21H5z"/><path d="M18 41V27h12v14"/><path d="M12 23h5v5h-5zM31 23h5v5h-5z"/><path d="M20 15h8"/></svg>
             </div>
           </div>
-          <div class="mission-route-labels"><span>WATER RESERVOIR</span><span>NORTHSIDE SCHOOL</span></div>
+          <div class="mission-route-labels"><span>WATER RESERVOIR</span><span id="goal-name">NORTHSIDE SCHOOL</span></div>
           <h3>Get clean water to the school.</h3>
           <p class="mission-description">Connect the reservoir to the school by rotating the loose pipe sections. Every connection matters.</p>
           <div class="objective-progress">
@@ -123,7 +140,7 @@
     </section>
 
     <footer class="footer-row">
-      <span>AQUAGRID <span class="footer-divider">·</span> A STUDENT GAME PROJECT</span>
+      <span>AQUAGRID <span class="footer-divider">·</span> BY VECTOR CODERS <span class="footer-divider">·</span> A STUDENT GAME PROJECT</span>
       <span>BUILT FOR A MORE WATER-SECURE WORLD <span class="footer-wave">〰</span></span>
     </footer>
   </main>
@@ -133,12 +150,28 @@
       <div class="success-burst" aria-hidden="true">✓</div>
       <div class="section-kicker">MISSION COMPLETE</div>
       <h2 id="success-title">The water is flowing!</h2>
-      <p>You reconnected the network and delivered clean water to the Northside School. A smarter network means less waste and a stronger community.</p>
+      <p id="success-description">You reconnected the network and delivered clean water to the school. A smarter network means less waste and a stronger community.</p>
       <div class="result-stats">
         <div><span>PIPE TURNS</span><b id="final-turns">0</b></div>
-        <div><span>MISSION SCORE</span><b id="final-score">100</b></div>
+        <div><span>TIME BONUS</span><b id="final-time-bonus">0</b></div>
+        <div><span>LEVEL POINTS</span><b id="final-level-score">0</b></div>
+        <div><span>TOTAL SCORE</span><b id="final-total-score">0</b></div>
       </div>
-      <button id="play-again-button" class="button button-primary" type="button">PLAY AGAIN <span class="button-symbol">↻</span></button>
+      <button id="play-again-button" class="button button-primary" type="button">NEXT LEVEL <span class="button-symbol">→</span></button>
+    </section>
+  </div>
+
+  <div id="game-over-modal" class="modal-backdrop" hidden>
+    <section class="success-modal gameover-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+      <div class="success-burst gameover-burst" aria-hidden="true">!</div>
+      <div class="section-kicker">RUN OVER</div>
+      <h2 id="game-over-title">The network went dry.</h2>
+      <p>You have used all three lives. Your next attempt starts again at Level 1, with a fresh set of lives and a clean score.</p>
+      <div class="result-stats gameover-stats">
+        <div><span>LEVEL REACHED</span><b id="game-over-level">1</b></div>
+        <div><span>FINAL SCORE</span><b id="game-over-score">0</b></div>
+      </div>
+      <button id="restart-run-button" class="button button-primary" type="button">RESTART FROM LEVEL 1 <span class="button-symbol">↻</span></button>
     </section>
   </div>
 </body>
