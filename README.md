@@ -107,4 +107,28 @@ The level score has a minimum of 25 points. The total score accumulates across c
 - A successful test completes the level.
 - Three failed tests end the run and offer a restart at Level 1.
 - If the countdown reaches zero, the run ends immediately. Timer expiry does not consume a life first.
-- Three separate illustrated school scenes switch as the timer falls: stable supply, strained supply, and critical shortage. The reserve gauge and status text update with the scene to show the community impact of unreliable water access.
+- Three separate illustrated school scenes switch as the timer falls: stable supply, strained supply, and critical shortage. The reserve percentage is calculated continuously from the exact time remaining (remaining seconds ÷ level time limit × 100); it is not random and does not jump between preset values. Both reserve bars animate smoothly as the timer runs. The three illustrations change only at broad condition thresholds, while the percentage and bars keep decreasing continuously.
+
+
+## How to play
+
+1. Select any pipe to rotate it 90 degrees clockwise.
+2. Follow the illuminated water route from the reservoir.
+3. Press **Test Water Flow** when ready. A failed test costs one life; rotating pipes does not.
+4. Use up to three hints per level (20-point deduction each). The water reserve falls continuously with the countdown.
+
+## Built to demonstrate the Game Development judging rubric
+
+- **Theme / problem interpretation:** the objective is reliable school water access, connected directly to UN SDG 6.
+- **Creativity / innovation:** endless procedurally generated pipe puzzles and three illustrated school-condition states.
+- **Gameplay / user experience:** quick-start guidance, visible live-flow feedback, clear controls, hints, score breakdown and responsive layout.
+- **Technical implementation:** grid-based route generation, pipe-connection rules, Breadth-First Search flow validation and deterministic real-time reserve calculations.
+- **Functionality:** timer, three-life run, retries, hints, score penalties/bonuses and level progression.
+- **Visual / audio design:** original school illustrations, animated flow states, responsive UI and optional user-controlled sound cues.
+- **Presentation / documentation:** this README plus GAME_DESIGN.md, GENERATION_EXPLAINED.md and AI_USAGE.md.
+
+These features are intended to address the judging criteria; they do not guarantee a particular score.
+
+## Open the game from GitHub
+
+The repository's **Code** page shows source files and the README. To play the game, open the GitHub Pages website: `https://kohli86.github.io/Pape-Hackathon/`. If it has not deployed yet, open **Settings → Pages** and check the published site link, with branch `main` and folder `/(root)`. After uploading a new version, allow the Pages deployment to finish, then hard-refresh the game with `Ctrl + Shift + R`.

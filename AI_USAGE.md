@@ -8,3 +8,6 @@ Additional assistance: AI was used to help revise the game rules and create the 
 
 
 Three schoolyard illustrations (`school-stable.webp`, `school-strained.webp`, and `school-critical.webp`) were generated specifically for AquaGrid and exported as separate image assets. They depict the same fictional community school under stable, strained, and critical water-supply conditions. A user-supplied picture was used only as broad reference for a warm, simplified flat-vector character-illustration aesthetic; its characters, pose, and composition were not reproduced. JavaScript switches between the three images as the level timer falls.
+
+
+Additional AI assistance in this iteration: judging-rubric-oriented UI content and layout, quick-start player guidance, an engineering/SDG evidence section, and optional Web Audio feedback cues. Team members should test and understand these features before submission.

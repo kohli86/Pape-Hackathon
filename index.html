@@ -131,6 +131,10 @@
               <button id="hint-button" class="button button-secondary" type="button"><span class="button-symbol">✦</span> HINT</button>
               <button id="reset-button" class="button button-quiet" type="button"><span class="button-symbol">↺</span> RESET</button>
             </div>
+            <div class="button-row utility-row">
+              <button id="sound-button" class="button button-quiet sound-button" type="button" aria-pressed="false"><span class="button-symbol">♫</span> SOUND OFF</button>
+              <span class="utility-note">KEYBOARD: TAB + ENTER / SPACE</span>
+            </div>
             <div class="hint-usage" id="hint-usage" aria-live="polite">HINTS USED: <strong id="hint-count">0 / 3</strong> <span>· −20 POINTS EACH</span></div>
           </div>
           <div id="feedback" class="feedback" role="status" aria-live="polite">
@@ -150,7 +154,41 @@
       </aside>
     </section>
 
-    <footer class="footer-row">
+    <section class="demo-section" aria-labelledby="quickstart-title">
+    <div class="demo-section-heading">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> FIELD GUIDE / QUICK START</div>
+        <h2 id="quickstart-title">Think like a water-systems engineer.</h2>
+        <p>Learn the controls in seconds. Every action has a clear consequence.</p>
+      </div>
+      <div class="demo-section-tag">PLAYER GUIDE · 01</div>
+    </div>
+    <div class="quickstart-grid">
+      <article class="quickstart-card"><span class="step-number">01</span><div class="quick-icon">↻</div><h3>Rotate the pipes</h3><p>Select any pipe to turn it 90° clockwise. Match neighbouring openings to build a continuous route.</p></article>
+      <article class="quickstart-card"><span class="step-number">02</span><div class="quick-icon">⌁</div><h3>Follow the live flow</h3><p>Glowing cyan pipes show where water can travel. Experiment freely—rotating pipes does not cost a life.</p></article>
+      <article class="quickstart-card"><span class="step-number">03</span><div class="quick-icon">▶</div><h3>Test your network</h3><p>Press TEST WATER FLOW when you're ready. A failed test costs one life; a successful route completes the mission.</p></article>
+      <article class="quickstart-card"><span class="step-number">04</span><div class="quick-icon">✦</div><h3>Use hints wisely</h3><p>You can use up to three hints per level. Each hint reveals a useful pipe and deducts 20 points.</p></article>
+    </div>
+  </section>
+
+  <section class="proof-section" aria-labelledby="proof-title">
+    <div class="demo-section-heading proof-heading">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> IMPACT + ENGINEERING</div>
+        <h2 id="proof-title">A real-world problem. A playable solution.</h2>
+        <p>AquaGrid connects its learning goal to the systems players build, test and improve.</p>
+      </div>
+      <div class="demo-section-tag">VECTOR CODERS · SDG 06</div>
+    </div>
+    <div class="proof-grid">
+      <article class="proof-card proof-impact"><div class="proof-card-top"><span class="proof-index">01 / THEME</span><span class="proof-symbol">◉</span></div><h3>Clean water for every community</h3><p>Players restore a school water network and see how reliable water access supports health, hygiene and learning.</p><span class="proof-foot">UN SUSTAINABLE DEVELOPMENT GOAL 6</span></article>
+      <article class="proof-card"><div class="proof-card-top"><span class="proof-index">02 / CREATIVITY</span><span class="proof-symbol">✳</span></div><h3>Endless generated missions</h3><p>Procedural route generation creates new pipe layouts, while difficulty scales with the level.</p><span class="proof-foot">PROCEDURAL PUZZLE GENERATION</span></article>
+      <article class="proof-card"><div class="proof-card-top"><span class="proof-index">03 / TECHNICAL</span><span class="proof-symbol">⌘</span></div><h3>Water flow is computed</h3><p>Breadth-First Search checks matching pipe openings and traces the connected route from reservoir to school.</p><span class="proof-foot">GRAPH SEARCH · BFS VALIDATION</span></article>
+      <article class="proof-card"><div class="proof-card-top"><span class="proof-index">04 / FUNCTIONALITY</span><span class="proof-symbol">◷</span></div><h3>A living water-supply system</h3><p>The reserve falls continuously with the timer. Lives, hint penalties, time bonuses and level progression affect each run.</p><span class="proof-foot">REAL-TIME GAME STATE + SCORING</span></article>
+    </div>
+  </section>
+
+  <footer class="footer-row">
       <span>AQUAGRID <span class="footer-divider">·</span> BY VECTOR CODERS <span class="footer-divider">·</span> A STUDENT GAME PROJECT</span>
       <span>BUILT FOR A MORE WATER-SECURE WORLD <span class="footer-wave">〰</span></span>
     </footer>

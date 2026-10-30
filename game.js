@@ -26,6 +26,7 @@
   const checkButton = document.getElementById("check-button");
   const hintButton = document.getElementById("hint-button");
   const resetButton = document.getElementById("reset-button");
+  const soundButton = document.getElementById("sound-button");
   const successModal = document.getElementById("success-modal");
   const nextLevelButton = document.getElementById("play-again-button");
   const gameOverModal = document.getElementById("game-over-modal");
@@ -78,12 +79,46 @@
   let timerDeadline = 0;
   let timerInterval = null;
   let gameOver = false;
+  let soundEnabled = false;
+  let audioContext = null;
   const HINT_LIMIT = 3;
   const HINT_PENALTY = 20;
 
   const keyOf = (r, c) => `${r},${c}`;
   const getTile = (r, c) => tileMap.get(keyOf(r, c));
   const randomInt = max => Math.floor(Math.random() * max);
+
+  function playCue(kind = "tap") {
+    if (!soundEnabled) return;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    try {
+      audioContext = audioContext || new AudioCtx();
+      if (audioContext.state === "suspended") audioContext.resume();
+      const presets = {
+        tap: [520, 0.045, "sine"],
+        flow: [740, 0.11, "triangle"],
+        hint: [430, 0.08, "sine"],
+        error: [185, 0.16, "triangle"],
+        win: [880, 0.18, "sine"]
+      };
+      const [frequency, duration, wave] = presets[kind] || presets.tap;
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = wave;
+      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.045, audioContext.currentTime + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + duration + 0.02);
+    } catch (error) {
+      // Audio is optional; gameplay must continue if a browser blocks sound.
+    }
+  }
+
 
   function shuffle(items) {
     const result = [...items];
@@ -318,40 +353,39 @@
   }
 
   function updateSchoolCondition() {
-    const ratio = levelTimeLimit > 0 ? Math.max(0, Math.min(1, timeRemaining / levelTimeLimit)) : 1;
+    // The reserve is a continuous, deterministic value derived directly from
+    // elapsed level time. It is never picked randomly or snapped to preset values.
+    const ratio = levelTimeLimit > 0
+      ? Math.max(0, Math.min(1, timeRemaining / levelTimeLimit))
+      : 0;
+    const reserve = Math.round(ratio * 1000) / 10; // one decimal place for a visibly smooth gauge
     let state;
     let label;
     let caption;
-    let reserve;
 
     if (ratio <= 0) {
       state = "empty";
       label = "SUPPLY LOST";
       caption = "The school has run out of water. The community is at risk.";
-      reserve = 0;
     } else if (ratio <= 0.25) {
       state = "critical";
       label = "SCHOOL AT RISK";
-      caption = "Emergency reserves are almost empty. Restore the flow now.";
-      reserve = 18;
+      caption = "Emergency reserves are running low. Restore the flow now.";
     } else if (ratio <= 0.5) {
       state = "strained";
       label = "SUPPLY FALLING";
       caption = "Water pressure is dropping and the school is rationing its supply.";
-      reserve = 55;
     } else {
       state = "healthy";
       label = "SUPPLY STABLE";
       caption = "The school has a steady supply of clean water.";
-      reserve = 100;
     }
 
     schoolScene.classList.remove("scene-healthy", "scene-strained", "scene-critical", "scene-empty");
     schoolScene.classList.add(`scene-${state}`);
 
-    // Use three separate illustrated scenes rather than tinting one image.
-    // The timer chooses the artwork; the empty state reuses the critical scene
-    // because the run ends immediately when the countdown reaches zero.
+    // The three illustrations mark broad visual stages; the reserve bars and
+    // percentage continue moving smoothly between those stages.
     const imageState = state === "empty" ? "critical" : state;
     const sceneImages = {
       healthy: "school-stable.webp",
@@ -368,19 +402,19 @@
       schoolIllustration.setAttribute("alt", imageState === "healthy"
         ? "Healthy community school with students, a full water tank and clean flowing water"
         : imageState === "strained"
-          ? "Community school in warm warning light as the water tank level falls"
-          : "Community school during a water shortage with a nearly empty tank and worried students");
+          ? "Community school as its water reserves gradually decline"
+          : "Community school during a severe water shortage with a nearly empty tank");
     }
+
+    const reserveText = `${reserve.toFixed(1).replace(/\.0$/, "")}%`;
     schoolStatus.textContent = label;
     schoolStatusCaption.textContent = caption;
-    schoolStatusDetail.textContent = `RESERVE LEVEL: ${reserve}%`;
+    schoolStatusDetail.textContent = `RESERVE LEVEL: ${reserveText}`;
     schoolReserveFill.style.width = `${reserve}%`;
-    // Update the overlaid reserve gauge and the CSS scene state. The illustration
-    // itself transitions from vibrant to sun-faded as the school runs low on water.
-    schoolArtReserve.textContent = `${reserve}%`;
+    schoolArtReserve.textContent = reserveText;
     schoolArtReserveFill.style.width = `${reserve}%`;
     schoolArtState.textContent = state === "healthy" ? "WATER SECURE" : state === "strained" ? "CONSERVE WATER" : state === "critical" ? "EMERGENCY SUPPLY" : "SUPPLY LOST";
-    schoolScene.setAttribute("aria-label", `Community school water condition: ${label.toLowerCase()}, reserve ${reserve} percent`);
+    schoolScene.setAttribute("aria-label", `Community school water condition: ${label.toLowerCase()}, reserve ${reserveText}`);
   }
 
   function updateRunHud() {
@@ -411,13 +445,13 @@
 
   function tickTimer() {
     if (solved || gameOver || !timerDeadline) return;
-    timeRemaining = Math.max(0, Math.ceil((timerDeadline - Date.now()) / 1000));
+    timeRemaining = Math.max(0, (timerDeadline - Date.now()) / 1000);
     updateRunHud();
     if (timeRemaining <= 0) handleTimeFailure();
   }
 
   function calculateLevelScore() {
-    const timeBonus = timeRemaining * 5;
+    const timeBonus = Math.floor(timeRemaining) * 5;
     const extraMoves = Math.max(0, moves - optimalMoves);
     const efficiencyBonus = Math.max(0, 100 - extraMoves * 5);
     const hintPenalty = hintsUsed * HINT_PENALTY;
@@ -619,6 +653,7 @@
     if (!tile) return;
     tile.rotation = (tile.rotation + 1) % 4;
     moves += 1;
+    playCue("tap");
     hintedKey = null;
     const result = updateDisplay();
     if (result.reachedGoal) {
@@ -650,6 +685,7 @@
       return;
     }
     hintsUsed += 1;
+    playCue("hint");
     updateHintUsage();
     hintedKey = keyOf(nextTile.r, nextTile.c);
     renderBoard();
@@ -679,11 +715,13 @@
     if (solved || gameOver) return;
     const result = updateDisplay();
     if (result.reachedGoal) {
+      playCue("win");
       completeLevel();
       return;
     }
     // Rotating pipes and seeing partial water flow are safe. Only an explicit
     // failed TEST WATER FLOW action costs one life.
+    playCue("error");
     handleFailedWaterTest();
   }
 
@@ -714,6 +752,12 @@
   checkButton.addEventListener("click", testFlow);
   hintButton.addEventListener("click", showHint);
   resetButton.addEventListener("click", resetLevel);
+  soundButton.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    soundButton.setAttribute("aria-pressed", String(soundEnabled));
+    soundButton.innerHTML = `<span class="button-symbol">♫</span> SOUND ${soundEnabled ? "ON" : "OFF"}`;
+    if (soundEnabled) playCue("flow");
+  });
   nextLevelButton.addEventListener("click", startNextLevel);
   restartRunButton.addEventListener("click", restartRun);
 
